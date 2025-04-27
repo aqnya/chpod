@@ -45,7 +45,7 @@ void cprintf(const char* color, const char* format, ...)
 
 void cperror(const char* color, const char* prefix);
 void down_help(void);
-int downloader(char addr[], char sa_dir[]);
+int downloader(const char *url, const char *filename);
 int pull(const char* pod_name, const char* pod_ver);
 int get_file_type(char filedir[]);
 void print_help(const char* pname);

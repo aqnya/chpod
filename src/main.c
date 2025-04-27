@@ -49,12 +49,8 @@ void handle_help(int argc, char *argv[]) {
 
 // 处理运行命令
 void handle_run(int argc, char *argv[]) {
-    if (argc >= 3) {
-        run_proot_container(argv[2]);
-    } else {
-        fprintf(stderr, "Error: insufficient arguments for run\n");
-        handle_help(argc, argv);
-    }
+    const char *container_name = argc >= 3 ? argv[2] : NULL;
+    run_proot_container(container_name);
 }
 
 // 解析命令行参数并分发

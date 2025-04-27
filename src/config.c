@@ -97,6 +97,15 @@ static int build_config_path(char *buf, const char *format, ...) {
   return CHD_SUCCESS;
 }
 
+void unset_ld_preload(void) {
+    // Unset the LD_PRELOAD environment variable
+    if (unsetenv("LD_PRELOAD") != 0) {
+        perror("Failed to unset LD_PRELOAD");
+    } else {
+        printf("LD_PRELOAD successfully unset.\n");
+    }
+}
+
 void config_init(void) {
   /* 环境变量检查 */
   const char *env_home = getenv("HOME");
@@ -106,7 +115,7 @@ void config_init(void) {
     cperror(RED, "[FATAL] necessary: HOME, PREFIX");
     exit(EXIT_FAILURE);
   }
-
+unset_ld_preload();
   /* 复制HOME值 */
   if (!(v_home = strdup(env_home))) {
     cperror(RED, "[FATAL] HOME memory alloc failed");
@@ -117,7 +126,7 @@ void config_init(void) {
   int status = CHD_SUCCESS;
 
   // 生成主配置目录路径（使用全局变量 config_h）
-  status = build_config_path(config_h, "%s/%s", v_home, ".config/chd");
+  status = build_config_path(config_h, "%s/%s", v_home, ".chd");
   if (status != CHD_SUCCESS) {
     config_cleanup();
     exit(EXIT_FAILURE);
