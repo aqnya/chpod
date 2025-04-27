@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "include/chd.h"
+#include "chd.h"
 
 #include <fcntl.h>
 #include <netdb.h>
@@ -46,8 +46,8 @@ resp_header_def resp;
 #define COLOR_GREEN "\033[32m"
 #define COLOR_RESET "\033[0m"
 
-// 更新进度条
-void update_progress_bar(long downloaded, long total_size) {
+
+static void update_progress_bar(long downloaded, long total_size) {
     static int last_percent = -1;
     const int bar_width = 40;
 
@@ -73,7 +73,6 @@ void update_progress_bar(long downloaded, long total_size) {
     }
 }
 
-// 解析响应头
 static int parse_response_header(const char *response) {
     char *pos = strstr(response, "HTTP/");
     if (pos) sscanf(pos, "%*s %d", &resp.status_code);
@@ -88,7 +87,6 @@ static int parse_response_header(const char *response) {
     return 0;
 }
 
-// 获取 HTTP 响应头
 static int fetch_http_header(int fd, char *buf, int buf_len) {
     char tmp[1];
     int i = 0, offset = 0, nbytes;
@@ -109,7 +107,6 @@ static int fetch_http_header(int fd, char *buf, int buf_len) {
     return -1;
 }
 
-// 解析 URL 并建立连接
 static int connect_to_url(const char *url) {
     int cfd;
     struct sockaddr_in cadd;

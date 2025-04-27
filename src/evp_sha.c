@@ -13,7 +13,7 @@ typedef struct {
 } Sha256Context;
 
 // 初始化SHA-256上下文
-int init_sha256_context(Sha256Context *ctx, const char *file_path) {
+static int init_sha256_context(Sha256Context *ctx, const char *file_path) {
   ctx->file = fopen(file_path, "rb");
   if (!ctx->file) {
     perror("Error opening file");
@@ -42,8 +42,7 @@ int init_sha256_context(Sha256Context *ctx, const char *file_path) {
   return 1;
 }
 
-// 释放SHA-256上下文
-void free_sha256_context(Sha256Context *ctx) {
+static void free_sha256_context(Sha256Context *ctx) {
   if (ctx->digest) {
     free(ctx->digest);
   }
@@ -55,7 +54,6 @@ void free_sha256_context(Sha256Context *ctx) {
   }
 }
 
-// 计算文件的SHA-256哈希值
 char *calculate_file_sha256(const char *file_path) {
   Sha256Context ctx;
   if (!init_sha256_context(&ctx, file_path)) {

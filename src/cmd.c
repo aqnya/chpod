@@ -1,11 +1,12 @@
-#include "include/chd.h"
-#include <dirent.h>  // For directory handling
+#include "chd.h"
+#include <dirent.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>   // For exit()
-#include <unistd.h>   // For access()
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
-int check_proot(void) {
+static int check_proot(void) {
   if (execute_command("proot >/dev/null 2>&1") == 127) {
     cperror(RED, "You have not install proot.\n");
     return -1;
@@ -13,8 +14,8 @@ int check_proot(void) {
   return 0;
 }
 
-// 检查容器目录是否存在
-void list_installed_containers() {
+
+static void list_installed_containers() {
     DIR *dir = opendir(config_h);
     if (!dir) {
         fprintf(stderr, "Error: Unable to open containers directory at %s\n", config_h);
@@ -32,21 +33,18 @@ void list_installed_containers() {
     closedir(dir);
 }
 
-// 自动查找容器路径
-char *find_container_path(const char *container_name) {
-    static char container_path[1024];
-    snprintf(container_path, sizeof(container_path), "%s/%s", config_h, container_name);
-
-    // 检查路径是否存在并可访问
-    if (access(container_path, F_OK) != 0) {
-        fprintf(stderr, "Error: Container '%s' not found in %s\n", container_name, config_h);
+char* find_container_path(const char *name) {
+    static char path[PATH_MAX];
+    snprintf(path, sizeof(path), "%s/%s", config_h, name);
+    
+    struct stat st;
+    if (stat(path, &st) == -1 || !S_ISDIR(st.st_mode)) {
         return NULL;
     }
-
-    return container_path;
+    
+    return strdup(path);
 }
 
-// 运行 Proot 容器逻辑
 void run_proot_container(const char *container_name) {
     if (check_proot() == -1) {
         goto EXIT;
@@ -60,6 +58,7 @@ void run_proot_container(const char *container_name) {
     } else {
         container_path = find_container_path(container_name);
         if (container_path == NULL) {
+        cperror(RED,"Error");
             exit(EXIT_FAILURE);
         }
     }

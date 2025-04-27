@@ -15,8 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "include/chd.h"
-#include "include/color.h"
+#include "chd.h"
+#include "color.h"
 
 void cprintf(const char *color, const char *format, ...) {
   va_list args;

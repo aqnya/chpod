@@ -1,4 +1,4 @@
-#include "include/chd.h"
+#include "chd.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -7,6 +7,7 @@
 void handle_install(int argc, char *argv[]);
 void handle_help(int argc, char *argv[]);
 void handle_run(int argc, char *argv[]);
+void handle_del(int argc, char *argv[]);
 
 // 命令选项结构体
 typedef struct {
@@ -21,7 +22,7 @@ CommandOption options[] = {
     {"-i", "--install", handle_install, "Install rootfs."},
     {"-h", "--help", handle_help, "Show help information."},
     {"-r", "--run", handle_run, "Run container with proot."},
-    {"-d","--del",delfs,"Delete rootfs."},
+    {"-d","--del",handle_del,"Delete rootfs."},
     {NULL, NULL, NULL, NULL}
 };
 
@@ -33,6 +34,35 @@ void handle_install(int argc, char *argv[]) {
         fprintf(stderr, "Error: insufficient arguments for install\n");
         handle_help(argc, argv);
     }
+}
+
+void handle_del(int argc, char *argv[]) {
+    if (argc < 3) {
+        fprintf(stderr, "Error: missing container name\n");
+        fprintf(stderr, "Usage: %s --del <container_name>\n", argv[0]);
+        return ;
+    }
+
+    const char *container_name = argv[2];
+    char *path = find_container_path(container_name);
+    
+    if (!path) {
+        fprintf(stderr, "Error: container '%s' not found\n", container_name);
+        return ;
+    }
+
+    printf("Deleting container: %s\n", container_name);
+    
+    int ret = delete_path(path);
+    free(path);  // 释放find_container_path分配的内存
+    
+    if (ret != 0) {
+        fprintf(stderr, "Failed to delete container: %s (error %d)\n", 
+                container_name, ret);
+        return ;
+    }
+
+    printf("Successfully deleted: %s\n", container_name);
 }
 
 // 处理帮助命令

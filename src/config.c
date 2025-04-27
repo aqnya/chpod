@@ -1,4 +1,4 @@
-#include "include/chd.h"
+#include "chd.h"
 
 #include <limits.h>
 #include <stdarg.h>
@@ -40,7 +40,7 @@ static int mkdir_p(const char *path, mode_t mode) {
   return 0;
 }
 
-int ensure_config_dirs(int count, ...) {
+static int ensure_config_dirs(int count, ...) {
   va_list args;
   va_start(args, count);
 
@@ -97,7 +97,7 @@ static int build_config_path(char *buf, const char *format, ...) {
   return CHD_SUCCESS;
 }
 
-void unset_ld_preload(void) {
+static void unset_ld_preload(void) {
     // Unset the LD_PRELOAD environment variable
     if (unsetenv("LD_PRELOAD") != 0) {
         perror("Failed to unset LD_PRELOAD");

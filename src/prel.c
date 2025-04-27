@@ -1,4 +1,4 @@
-#include "include/chd.h"
+#include "chd.h"
 
 #include <sys/ptrace.h>
 

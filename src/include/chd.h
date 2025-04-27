@@ -56,7 +56,7 @@ void run_proot_container(const char *container_dir);
 int extract(const char *filename, const char *destdir);
 void init_container(const char *dir);
 char *find_container_path(const char *container_name);
-int delfs(char *dir);
+ int delete_path(const char *path);
 #ifdef __cplusplus
 }
 #endif

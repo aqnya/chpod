@@ -6,10 +6,9 @@
 #include <string.h>
 #include <sys/stat.h>
 
-#include "include/chd.h"
+#include "chd.h"
 
-// 确保目标路径安全（防止路径遍历攻击）
-void safe_path(const char *destdir, const char *path, char *safe_path,
+static void safe_path(const char *destdir, const char *path, char *safe_path,
                size_t size) {
   char resolved_dest[PATH_MAX];
   if (realpath(destdir, resolved_dest) == NULL) {

@@ -1,4 +1,4 @@
-#include "include/chd.h"
+#include "chd.h"
 
 int fix_dns(const char *dir) {
   char dns_dir[PATH_MAX] = {0};

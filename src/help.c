@@ -1,15 +1,13 @@
 #include <stdio.h>
 
-// 定义 ANSI 转义序列
 #define ANSI_BOLD "\033[1m"
 #define ANSI_RESET "\033[0m"
 
-#include "include/chd.h"
+#include "chd.h"
 
 #include <sys/stat.h>
 
-// 辅助函数：高亮显示选项名称
-void print_highlighted_option(const char *option) {
+static void print_highlighted_option(const char *option) {
   printf(ANSI_BOLD "%s" ANSI_RESET, option);
 }
 

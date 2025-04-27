@@ -1,5 +1,5 @@
-#include "include/chd.h"
-#include "include/down.h"
+#include "chd.h"
+#include "down.h"
 
 #include <limits.h>
 #include <sys/stat.h>
