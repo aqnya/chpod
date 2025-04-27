@@ -21,6 +21,7 @@ CommandOption options[] = {
     {"-i", "--install", handle_install, "Install rootfs."},
     {"-h", "--help", handle_help, "Show help information."},
     {"-r", "--run", handle_run, "Run container with proot."},
+    {"-d","--del",delfs,"Delete rootfs."},
     {NULL, NULL, NULL, NULL}
 };
 
