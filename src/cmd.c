@@ -46,6 +46,7 @@ char* find_container_path(const char *name) {
 }
 
 void run_proot_container(const char *container_name) {
+struct stat st;
     if (check_proot() == -1) {
         goto EXIT;
     }
@@ -62,15 +63,33 @@ void run_proot_container(const char *container_name) {
             exit(EXIT_FAILURE);
         }
     }
+    static char path[PATH_MAX];
+    static char sh[128]={0};
+    snprintf(path, sizeof(path), "%s/%s",container_path, "bin/bash");
+    printf("%s\n",path);
+        if (lstat(path, &st) == 0 || !S_ISDIR(st.st_mode)) {
+        snprintf(sh, sizeof(sh), "%s", "/bin/bash");
+    }else{
+    memset(path, 0x00, sizeof(path));
+        snprintf(path, sizeof(path), "%s/%s",container_path, "bin/sh");
+        if (lstat(path, &st) == 0||!S_ISDIR(st.st_mode)) {
+        snprintf(sh, sizeof(sh), "%s", "/bin/sh");
+        }else{
+            printf("%s\n",path);
+        cperror(RED,"Unknown shell!");
+        return ;
+        }
+    }
 
     char proot_cmd[2048] = {0};
     snprintf(proot_cmd, sizeof(proot_cmd),
              "proot --link2symlink -0 -r %s -b /dev -b /proc -b %s/root:/dev/shm "
              "-w /root /usr/bin/env -i HOME=/root "
              "PATH=/usr/local/sbin:/usr/local/bin:/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games "
-             "SHELL=/bin/bash TERM=$TERM LANG=C.UTF-8 /bin/bash --login",
-             container_path, container_path);
-
+             "SHELL=%s TERM=$TERM LANG=C.UTF-8 %s --login",
+             container_path, container_path,sh,sh);
+printf("%s\n",proot_cmd);
+free(container_path);
     if (execute_command(proot_cmd) == -1) {
     EXIT:
         fprintf(stderr,
@@ -78,4 +97,5 @@ void run_proot_container(const char *container_name) {
                 "%s\nNote: unset $LD_PRELOAD before running may fix this issue.\n",
                 proot_cmd, errno, strerror(errno));
     }
+    
 }

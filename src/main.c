@@ -54,7 +54,7 @@ void handle_del(int argc, char *argv[]) {
     printf("Deleting container: %s\n", container_name);
     
     int ret = delete_path(path);
-    free(path);  // 释放find_container_path分配的内存
+    free(path);
     
     if (ret != 0) {
         fprintf(stderr, "Failed to delete container: %s (error %d)\n", 
