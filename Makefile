@@ -1,7 +1,7 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -O2 -g -I./src/include
-LDFLAGS = -lcrypto -lssl -larchive # 根据实际需要的库添加
+CFLAGS = -Wall -Wextra -O2 -g -I./src/include -g
+LDFLAGS = -lcrypto -lssl -larchive
 TARGET = chd
 
 # Directory structure

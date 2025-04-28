@@ -4,6 +4,8 @@
 #include <limits.h>
 #include <sys/stat.h>
 
+struct stat file_stat;
+
 static char *tok_html(const char *tmp_file) {
   FILE *fp = fopen(tmp_file, "r");
   if (!fp) {
@@ -107,6 +109,10 @@ int pull(const char *pod_name, const char *pod_ver) {
     unlink(htm_file); // 删除临时文件
     return -1;
   }
+  
+      if (stat(rfs_n, &file_stat) == 0) {
+        goto extra;
+    }
 
   // 构造默认链接
   if (snprintf(def_link, PATH_MAX, "%s%s/%s/%s/default/", sou_link, pod_name,
@@ -170,7 +176,7 @@ int pull(const char *pod_name, const char *pod_ver) {
     cperror(RED, "Clear failed!");
     return -1;
   }
-
+extra:
   if (extract(rfs_n, extract_dir) < 0) {
     cperror(RED, "Failed to extract rootfs file!");
     return -1;

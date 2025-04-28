@@ -9,7 +9,7 @@
 #include <limits.h>
 
 #define MAX_THREADS 8
-#define QUEUE_SIZE 8192
+#define QUEUE_SIZE 65536
 
 typedef struct {
     char *paths[QUEUE_SIZE];

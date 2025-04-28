@@ -10,11 +10,11 @@ const char *get_arch(void) {
 #elif defined(__arm__) || defined(_M_ARM)
   return "arm";
 #elif defined(__powerpc64__)
-  return "PowerPC64";
+  return "powerpc64";
 #elif defined(__ppc__)
-  return "PowerPC";
+  return "powerpc";
 #elif defined(__mips__)
-  return "MIPS";
+  return "mips";
 #else
   return "Unknown";
 #endif
