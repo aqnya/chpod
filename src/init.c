@@ -30,7 +30,7 @@ int fix_dns(const char *dir) {
     return -1;
   }
 
-  cprintf(GREEN,"Fixed DNS file.\n");
+  cprintf(GREEN, "Fixed DNS file.\n");
   return 0;
 }
 

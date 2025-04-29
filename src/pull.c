@@ -109,10 +109,10 @@ int pull(const char *pod_name, const char *pod_ver) {
     unlink(htm_file); // 删除临时文件
     return -1;
   }
-  
-      if (stat(rfs_n, &file_stat) == 0) {
-        goto extra;
-    }
+
+  if (stat(rfs_n, &file_stat) == 0) {
+    goto extra;
+  }
 
   // 构造默认链接
   if (snprintf(def_link, PATH_MAX, "%s%s/%s/%s/default/", sou_link, pod_name,

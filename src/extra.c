@@ -9,10 +9,10 @@
 #include "chd.h"
 
 static void safe_path(const char *destdir, const char *path, char *safe_path,
-               size_t size) {
+                      size_t size) {
   char resolved_dest[PATH_MAX];
   if (realpath(destdir, resolved_dest) == NULL) {
-    cprintf(RED,"realpath failed for destination directory");
+    cprintf(RED, "realpath failed for destination directory");
     exit(1);
   }
 
