@@ -38,6 +38,7 @@ void handle_install(int argc, char *argv[]) {
 void handle_del(int argc, char *argv[]) {
   if (argc < 3) {
     fprintf(stderr, "Error: missing container name\n");
+   list_installed_containers();
     fprintf(stderr, "Usage: %s --del <container_name>\n", argv[0]);
     return;
   }

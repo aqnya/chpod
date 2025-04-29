@@ -1,7 +1,7 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -O2 -g -I./src/include
-LDFLAGS = -lcrypto -lssl -larchive
+CFLAGS =  -Wall -Wextra -O2  -I./src/include -flto
+LDFLAGS = -lcrypto -lssl -larchive -flto
 TARGET = chd
 
 # Directory structure

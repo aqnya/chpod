@@ -4,17 +4,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <unistd.h>
 
 static int check_proot(void) {
   if (execute_command("proot >/dev/null 2>&1") == 127) {
-    cperror(RED, "You have not install proot.\n");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "You have not install proot.\n");
     return -1;
   }
   return 0;
 }
 
-static void list_installed_containers() {
+void list_installed_containers(void) {
   DIR *dir = opendir(config_h);
   if (!dir) {
     fprintf(stderr, "Error: Unable to open containers directory at %s\n",
@@ -22,7 +21,7 @@ static void list_installed_containers() {
     exit(EXIT_FAILURE);
   }
 
-  printf("Available containers in %s:\n", config_h);
+  printf("Available containers:\n");
   struct dirent *entry;
   while ((entry = readdir(dir)) != NULL) {
     // Skip "." and ".."
@@ -60,7 +59,7 @@ void run_proot_container(const char *container_name) {
   } else {
     container_path = find_container_path(container_name);
     if (container_path == NULL) {
-      cperror(RED, "Error");
+      printc(FG_RED,BG_DEFAULT,STYLE_RESET, "Error");
       exit(EXIT_FAILURE);
     }
   }
@@ -77,7 +76,7 @@ void run_proot_container(const char *container_name) {
       snprintf(sh, sizeof(sh), "%s", "/bin/sh");
     } else {
       printf("%s\n", path);
-      cperror(RED, "Unknown shell!");
+      printc(FG_RED,BG_DEFAULT,STYLE_RESET, "Unknown shell!");
       return;
     }
   }

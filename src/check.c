@@ -39,7 +39,7 @@ int check_sha256(const char *rfs_dir) {
   int is_valid = (memcmp(digest, data, 64) == 0);
 
   if (!is_valid) {
-    cperror(RED, "Check sha256 failed!");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "Check sha256 failed!");
   }
 
   free(digest);

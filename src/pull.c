@@ -77,12 +77,12 @@ int pull(const char *pod_name, const char *pod_ver) {
   // 参数检查
   const char *pod_arch = get_arch();
   if (pod_name == NULL || pod_ver == NULL || pod_arch == NULL) {
-    cperror(RED, "Invalid parameters!");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "Invalid parameters!");
     return -1;
   }
 
   if (strlen(pod_name) + strlen(pod_ver) + strlen(pod_arch) > 64) {
-    cperror(RED, "OUT OF MEM!");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "OUT OF MEM!");
     return -1;
   }
 
@@ -98,41 +98,35 @@ int pull(const char *pod_name, const char *pod_ver) {
   if (snprintf(rfs_n, PATH_MAX, "%s/%s_%s+%s.tar.xz", config_tmp, pod_name,
                pod_ver, pod_arch) >= PATH_MAX ||
       snprintf(htm_file, PATH_MAX, "%s/default.htm", config_tmp) >= PATH_MAX) {
-    cperror(RED, "File name too long!");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "File name too long!");
     unlink(htm_file); // 删除临时文件
     return -1;
   }
 
   if (snprintf(extract_dir, PATH_MAX, "%s/%s_%s", config_h, pod_name,
                pod_ver) >= PATH_MAX) {
-    cperror(RED, "File name too long!");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "File name too long!");
     unlink(htm_file); // 删除临时文件
     return -1;
-  }
-
-  if (stat(rfs_n, &file_stat) == 0) {
-    goto extra;
   }
 
   // 构造默认链接
   if (snprintf(def_link, PATH_MAX, "%s%s/%s/%s/default/", sou_link, pod_name,
                pod_ver, pod_arch) >= PATH_MAX) {
-    cperror(RED, "Path too long!");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "Path too long!");
     return -1;
   }
 
-  printf("Default link: %s\n", def_link);
-
   // 下载HTML文件
   if (downloader(def_link, htm_file) < 0) {
-    cperror(RED, "Failed to get HTML file");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "Failed to get HTML file");
     return -1;
   }
 
   // 解析HTML文件
   char *ret = tok_html(htm_file);
   if (ret == NULL) {
-    cperror(RED, "Failed to parse HTML file!");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "Failed to parse HTML file!");
     unlink(htm_file); // 删除临时文件
     return -1;
   }
@@ -142,21 +136,24 @@ int pull(const char *pod_name, const char *pod_ver) {
           PATH_MAX ||
       snprintf(pod_sha, PATH_MAX, "%s%sSHA256SUMS", def_link, ret) >=
           PATH_MAX) {
-    cperror(RED, "Path too long!");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "Path too long!");
     unlink(htm_file); // 删除临时文件
     return -1;
   }
 
+if (stat(rfs_n, &file_stat) != 0) {
+   
   // 下载rootfs文件
   if (downloader(pod_url, rfs_n) < 0) {
-    cperror(RED, "Failed to get rootfs file!");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "Failed to get rootfs file!");
     unlink(htm_file); // 删除临时文件
     return -1;
+  }
   }
 
   // 下载SHA256文件
   if (downloader(pod_sha, sha_file) < 0) {
-    cperror(RED, "Failed to get SHA256 file!");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "Failed to get SHA256 file!");
     unlink(htm_file); // 删除临时文件
     unlink(rfs_n);    // 删除rootfs文件
     return -1;
@@ -164,7 +161,6 @@ int pull(const char *pod_name, const char *pod_ver) {
 
   // 校验SHA256
   if (check_sha256(rfs_n) != 1) {
-    cperror(RED, "SHA256 check failed!");
     unlink(htm_file); // 删除临时文件
     unlink(rfs_n);    // 删除rootfs文件
     unlink(sha_file); // 删除SHA256文件
@@ -173,12 +169,12 @@ int pull(const char *pod_name, const char *pod_ver) {
 
   // 清理临时文件
   if (unlink(htm_file) != 0 || unlink(sha_file) != 0) {
-    cperror(RED, "Clear failed!");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "Clear failed!");
     return -1;
   }
-extra:
+  
   if (extract(rfs_n, extract_dir) < 0) {
-    cperror(RED, "Failed to extract rootfs file!");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "Failed to extract rootfs file!");
     return -1;
   }
 

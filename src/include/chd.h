@@ -19,7 +19,6 @@
 /*----- Project Headers -----*/
 #include "color.h"
 #include "config.h"
-// #include "down.h"
 
 /*----- Platform Requirements -----*/
 #if !defined(__linux__)
@@ -40,10 +39,8 @@ extern "C" {
 /*----- API Declarations -----*/
 int check_sha256(const char* rfs_dir);
 int execute_command(const char* cmd);
-void cprintf(const char* color, const char* format, ...)
-    __attribute__((format(printf, 2, 3)));
 
-void cperror(const char* color, const char* prefix);
+    void printc(ForegroundColor fg, BackgroundColor bg, TextStyle style, const char *format, ...);
 void down_help(void);
 int downloader(const char *url, const char *filename);
 int pull(const char* pod_name, const char* pod_ver);
@@ -57,6 +54,7 @@ int extract(const char *filename, const char *destdir);
 void init_container(const char *dir);
 char *find_container_path(const char *container_name);
  int delete_path(const char *path);
+ void list_installed_containers(void);
 #ifdef __cplusplus
 }
 #endif

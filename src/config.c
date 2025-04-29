@@ -49,7 +49,7 @@ static int ensure_config_dirs(int count, ...) {
 
     /* 路径有效性检查 */
     if (strlen(dir) >= PATH_MAX) {
-      cprintf(RED, "[ERROR] 路径过长: %s\n", dir);
+      printc(FG_RED,BG_DEFAULT,STYLE_RESET,"[ERROR] Path too long: %s\n", dir);
       va_end(args);
       return CHD_ERR_INVALID_ARG;
     }
@@ -58,21 +58,19 @@ static int ensure_config_dirs(int count, ...) {
     struct stat st;
     if (stat(dir, &st) == 0) {
       if (S_ISDIR(st.st_mode)) {
-        //    cprintf(CYAN, "[OK] 目录已存在: %s\n", dir);
         continue;
       }
-      cprintf(RED, "[ERROR] %s is file\n", dir);
+      printc(FG_RED,BG_DEFAULT,STYLE_RESET, "[ERROR] %s is file\n", dir);
       va_end(args);
       return CHD_ERR_IO;
     }
 
     /* 创建目录 */
     if (mkdir_p(dir, 0755) != 0) {
-      cperror(RED, "[FATAL] creat failed\n");
+      printc(FG_RED,BG_DEFAULT,STYLE_RESET, "[FATAL] creat failed\n");
       va_end(args);
       return CHD_ERR_IO;
     }
-    //   cprintf(GREEN, "[OK] 已创建目录: %s\n", dir);
   }
 
   va_end(args);
@@ -87,10 +85,10 @@ static int build_config_path(char *buf, const char *format, ...) {
   va_end(args);
 
   if (ret < 0) {
-    cperror(RED, "[FATAL] format path failed");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "[FATAL] format path failed");
     return CHD_ERR_IO;
   } else if (ret >= PATH_MAX) {
-    cperror(RED, "[FATAL] path too long");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "[FATAL] path too long");
     return CHD_ERR_INVALID_ARG;
   }
 
@@ -98,11 +96,8 @@ static int build_config_path(char *buf, const char *format, ...) {
 }
 
 static void unset_ld_preload(void) {
-  // Unset the LD_PRELOAD environment variable
   if (unsetenv("LD_PRELOAD") != 0) {
-    perror("Failed to unset LD_PRELOAD");
-  } else {
-    printf("LD_PRELOAD successfully unset.\n");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "[FATAL] Failed to unset LD_PRELOAD");
   }
 }
 
@@ -112,13 +107,13 @@ void config_init(void) {
   const char *env_prefix = getenv("PREFIX");
 
   if (!env_home || !env_prefix) {
-    cperror(RED, "[FATAL] necessary: HOME, PREFIX");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "[FATAL] necessary: HOME, PREFIX");
     exit(EXIT_FAILURE);
   }
   unset_ld_preload();
   /* 复制HOME值 */
   if (!(v_home = strdup(env_home))) {
-    cperror(RED, "[FATAL] HOME memory alloc failed");
+    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "[FATAL] HOME memory alloc failed");
     exit(EXIT_FAILURE);
   }
 
