@@ -1,7 +1,10 @@
-#include <stdio.h>
-extern char config_h[PATH_MAX];
-extern char config_tmp[PATH_MAX];
-extern char* v_home;
+typedef struct {
+    char tmp_dir[PATH_MAX];
+    char cfg_path[PATH_MAX];
+    char home[PATH_MAX];
+} cfg_head;
+
+extern cfg_head cfg;
 
 // 声明初始化/清理函数（如果需要）
 void config_init(void);

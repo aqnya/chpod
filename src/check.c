@@ -17,32 +17,32 @@
 
 #include "include/chd.h"
 
-int check_sha256(const char *rfs_dir) {
+bool check_sha256(const char *rfs_dir) {
   FILE *fp = fopen("./SHA256SUMS", "r");
   if (!fp) {
     fprintf(stderr, "No SHA256SUMS file!\n");
-    return 0;
+    return false;
   }
 
   char data[100];
   char *temp_p = fgets(data, sizeof(data), fp);
   fclose(fp);
   if (!temp_p) {
-    return 0;
+    return false;
   }
 
   char *digest = calculate_file_sha256(rfs_dir);
   if (!digest) {
-    return -1;
+    return false;
   }
 
   int is_valid = (memcmp(digest, data, 64) == 0);
 
   if (!is_valid) {
-    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "Check sha256 failed!");
+    printc(FG_RED, BG_DEFAULT, STYLE_RESET, "Check sha256 failed!");
   }
 
   free(digest);
 
-  return is_valid;
+  return true;
 }

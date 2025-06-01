@@ -6,11 +6,6 @@
 #include <string.h>
 #include <sys/stat.h>
 
-/* 全局变量定义 */
-char config_tmp[PATH_MAX] = {0};
-char config_h[PATH_MAX] = {0}; // 配置路径缓冲区
-char *v_home = NULL;           // HOME环境变量值
-
 static int mkdir_p(const char *path, mode_t mode) {
   char tmp[PATH_MAX];
   char *p = NULL;
@@ -49,7 +44,8 @@ static int ensure_config_dirs(int count, ...) {
 
     /* 路径有效性检查 */
     if (strlen(dir) >= PATH_MAX) {
-      printc(FG_RED,BG_DEFAULT,STYLE_RESET,"[ERROR] Path too long: %s\n", dir);
+      printc(FG_RED, BG_DEFAULT, STYLE_RESET, "[ERROR] Path too long: %s\n",
+             dir);
       va_end(args);
       return CHD_ERR_INVALID_ARG;
     }
@@ -60,14 +56,14 @@ static int ensure_config_dirs(int count, ...) {
       if (S_ISDIR(st.st_mode)) {
         continue;
       }
-      printc(FG_RED,BG_DEFAULT,STYLE_RESET, "[ERROR] %s is file\n", dir);
+      printc(FG_RED, BG_DEFAULT, STYLE_RESET, "[ERROR] %s is file\n", dir);
       va_end(args);
       return CHD_ERR_IO;
     }
 
     /* 创建目录 */
     if (mkdir_p(dir, 0755) != 0) {
-      printc(FG_RED,BG_DEFAULT,STYLE_RESET, "[FATAL] creat failed\n");
+      printc(FG_RED, BG_DEFAULT, STYLE_RESET, "[FATAL] creat failed\n");
       va_end(args);
       return CHD_ERR_IO;
     }
@@ -77,27 +73,10 @@ static int ensure_config_dirs(int count, ...) {
   return CHD_SUCCESS;
 }
 
-static int build_config_path(char *buf, const char *format, ...) {
-  va_list args;
-  va_start(args, format);
-
-  int ret = vsnprintf(buf, PATH_MAX, format, args);
-  va_end(args);
-
-  if (ret < 0) {
-    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "[FATAL] format path failed");
-    return CHD_ERR_IO;
-  } else if (ret >= PATH_MAX) {
-    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "[FATAL] path too long");
-    return CHD_ERR_INVALID_ARG;
-  }
-
-  return CHD_SUCCESS;
-}
-
 static void unset_ld_preload(void) {
   if (unsetenv("LD_PRELOAD") != 0) {
-    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "[FATAL] Failed to unset LD_PRELOAD");
+    printc(FG_RED, BG_DEFAULT, STYLE_RESET,
+           "[FATAL] Failed to unset LD_PRELOAD");
   }
 }
 
@@ -107,35 +86,21 @@ void config_init(void) {
   const char *env_prefix = getenv("PREFIX");
 
   if (!env_home || !env_prefix) {
-    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "[FATAL] necessary: HOME, PREFIX");
+    printc(FG_RED, BG_DEFAULT, STYLE_RESET, "[FATAL] necessary: HOME, PREFIX");
     exit(EXIT_FAILURE);
   }
   unset_ld_preload();
-  /* 复制HOME值 */
-  if (!(v_home = strdup(env_home))) {
-    printc(FG_RED,BG_DEFAULT,STYLE_RESET, "[FATAL] HOME memory alloc failed");
-    exit(EXIT_FAILURE);
-  }
-
+  
+strncpy(cfg.home,getenv("HOME"),PATH_MAX -1);
   /* 生成配置路径 */
   int status = CHD_SUCCESS;
 
-  // 生成主配置目录路径（使用全局变量 config_h）
-  status = build_config_path(config_h, "%s/%s", v_home, ".chd");
-  if (status != CHD_SUCCESS) {
-    config_cleanup();
-    exit(EXIT_FAILURE);
-  }
+  snprintf(cfg.cfg_path,sizeof(cfg.cfg_path),"%s/%s",cfg.home,".chd");
 
-  // 生成临时目录路径（使用全局变量 config_tmp）
-  status = build_config_path(config_tmp, "%s/%s", config_h, ".tmp");
-  if (status != CHD_SUCCESS) {
-    config_cleanup();
-    exit(EXIT_FAILURE);
-  }
+snprintf(cfg.tmp_dir,sizeof(cfg.tmp_dir),"%s/%s",cfg.cfg_path,".tmp");
 
   // 创建目录结构
-  status = ensure_config_dirs(2, config_h, config_tmp);
+  status = ensure_config_dirs(2, cfg.cfg_path, cfg.tmp_dir);
   if (status != CHD_SUCCESS) {
     config_cleanup();
     exit(EXIT_FAILURE);
@@ -143,10 +108,6 @@ void config_init(void) {
 }
 
 void config_cleanup(void) {
-  if (v_home) {
-    free(v_home);
-    v_home = NULL;
-  }
 
-  memset(config_h, 0, PATH_MAX); // 清空配置路径
+  memset(cfg.cfg_path, 0, PATH_MAX); // 清空配置路径
 }

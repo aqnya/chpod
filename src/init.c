@@ -4,7 +4,7 @@ int fix_dns(const char *dir) {
   char dns_dir[PATH_MAX] = {0};
   if (snprintf(dns_dir, PATH_MAX, "%s%s", dir, "/etc/resolv.conf") >=
       PATH_MAX) {
-    printc(FG_RED,BG_DEFAULT,STYLE_RESET,"Path too long!");
+    printc(FG_RED, BG_DEFAULT, STYLE_RESET, "Path too long!");
     return -1;
   }
   unlink(dns_dir);
@@ -30,7 +30,7 @@ int fix_dns(const char *dir) {
     return -1;
   }
 
-  printc(FG_GREEN,BG_DEFAULT,STYLE_RESET,"Fixed DNS file.\n");
+  printc(FG_GREEN, BG_DEFAULT, STYLE_RESET, "Fixed DNS file.\n");
   return 0;
 }
 
