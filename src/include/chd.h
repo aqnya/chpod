@@ -26,13 +26,6 @@
 extern "C" {
 #endif
 
-/*----- Status Codes -----*/
-#define CHD_SUCCESS          0
-#define CHD_ERR_SYSCALL     -1
-#define CHD_ERR_INVALID_ARG -2
-#define CHD_ERR_IO          -3
-#define CHD_ERR_HASH        -4
-
 const char* get_arch(void);
 int execute_command(const char* cmd);
 int get_file_type(char filedir[]);

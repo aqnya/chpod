@@ -150,7 +150,7 @@ static int connect_to_url_part(const char *url, long start, long end,
              "HEAD %s HTTP/1.1\r\n"
              "Host: %s\r\n"
              "User-Agent: curl/8.6.0\r\n"
-             "Connection: close\r\n\r\n", // 使用HEAD方法减少数据传输
+             "Connection: close\r\n\r\n",
              path, host);
   } else {
     snprintf(request, REU_SIZE,
