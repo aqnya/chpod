@@ -29,7 +29,6 @@ extern "C" {
 const char* get_arch(void);
 int execute_command(const char* cmd);
 int get_file_type(char filedir[]);
-char* calculate_file_sha256(const char* file_path);
 bool check_sha256(const char* rfs_dir);
 int delete_path(const char *path);
 void remove_files(const char* path);

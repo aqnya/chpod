@@ -1,4 +1,5 @@
 
+#include "include/chd.h"
 #include <errno.h>
 #include <openssl/evp.h>
 #include <openssl/sha.h>
@@ -54,7 +55,7 @@ static void free_sha256_context(Sha256Context *ctx) {
   }
 }
 
-char *calculate_file_sha256(const char *file_path) {
+static char *calculate_file_sha256(const char *file_path) {
   Sha256Context ctx;
   if (!init_sha256_context(&ctx, file_path)) {
     return NULL;
@@ -94,4 +95,35 @@ char *calculate_file_sha256(const char *file_path) {
 
   free_sha256_context(&ctx);
   return hex_digest;
+}
+
+
+bool check_sha256(const char *rfs_dir) {
+  FILE *fp = fopen("./SHA256SUMS", "r");
+  if (!fp) {
+    fprintf(stderr, "No SHA256SUMS file!\n");
+    return false;
+  }
+
+  char data[100];
+  char *temp_p = fgets(data, sizeof(data), fp);
+  fclose(fp);
+  if (!temp_p) {
+    return false;
+  }
+
+  char *digest = calculate_file_sha256(rfs_dir);
+  if (!digest) {
+    return false;
+  }
+
+  int is_valid = (memcmp(digest, data, 64) == 0);
+
+  if (!is_valid) {
+    printc(FG_RED, BG_DEFAULT, STYLE_RESET, "Check sha256 failed!");
+  }
+
+  free(digest);
+
+  return true;
 }
