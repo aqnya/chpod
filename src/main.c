@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-cfg_head cfg={0};
+cfg_head cfg = {0};
 
 int prase_args(int argc, char *argv[]) {
   if (argc < 2) {
@@ -19,11 +19,9 @@ int prase_args(int argc, char *argv[]) {
       show_help(argv[0]);
       exit(0);
     }
-  }else
-  if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
+  } else if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
     show_help(argv[0]);
-  } else
-      if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
+  } else if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
     printf("Hash :%s\n", GIT_COMMIT_HASH);
     printf("Branch :%s\n", GIT_BRANCH);
     printf("Tag :%s\n", GIT_TAG);

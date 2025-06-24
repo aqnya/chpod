@@ -1,7 +1,7 @@
 # Compiler and flags
 CC = gcc
 CFLAGS = -Wall -Wextra -O2 -I./src/include -I$(BUILD_DIR) -flto  # 增加头文件搜索路径
-LDFLAGS = -lcrypto -lssl -larchive -flto
+LDFLAGS = -larchive -flto
 TARGET = chd
 
 # Directory structure

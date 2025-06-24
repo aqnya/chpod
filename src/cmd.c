@@ -33,7 +33,7 @@ void list_installed_containers(void) {
   closedir(dir);
 }
 
-char *find_container_path(const char *name) {
+inline char *find_container_path(const char *name) {
   static char path[PATH_MAX];
   snprintf(path, sizeof(path), "%s/%s", cfg.cfg_path, name);
 

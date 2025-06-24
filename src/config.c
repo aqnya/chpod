@@ -1,16 +1,17 @@
 #include "chd.h"
 
+#include <errno.h>
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <errno.h>
 
 static int __mkdir_r(const char *path, mode_t mode) {
   char tmp[PATH_MAX];
   size_t len = strlen(path);
 
-  if (len >= PATH_MAX) return -1;
+  if (len >= PATH_MAX)
+    return -1;
 
   strncpy(tmp, path, PATH_MAX);
   tmp[len] = '\0';
@@ -18,7 +19,8 @@ static int __mkdir_r(const char *path, mode_t mode) {
   for (char *p = tmp + 1; *p; p++) {
     if (*p == '/') {
       *p = '\0';
-      if (mkdir(tmp, mode) && errno != EEXIST) return -1;
+      if (mkdir(tmp, mode) && errno != EEXIST)
+        return -1;
       *p = '/';
     }
   }
@@ -26,9 +28,7 @@ static int __mkdir_r(const char *path, mode_t mode) {
   return mkdir(tmp, mode) && errno != EEXIST ? -1 : 0;
 }
 
-static void unset_ld_preload(void) {
-  unsetenv("LD_PRELOAD");
-}
+static void unset_ld_preload(void) { unsetenv("LD_PRELOAD"); }
 
 void config_init(void) {
   const char *env_home = getenv("HOME");
@@ -50,14 +50,11 @@ void config_init(void) {
     exit(EXIT_FAILURE);
   }
 
-  if (__mkdir_r(cfg.cfg_path, 0755) != 0 ||
-      __mkdir_r(cfg.tmp_dir, 0755) != 0) {
+  if (__mkdir_r(cfg.cfg_path, 0755) != 0 || __mkdir_r(cfg.tmp_dir, 0755) != 0) {
     printc(FG_RED, BG_DEFAULT, STYLE_RESET, "[FATAL] Failed to create dirs\n");
     config_cleanup();
     exit(EXIT_FAILURE);
   }
 }
 
-void config_cleanup(void) {
-  memset(cfg.cfg_path, 0, PATH_MAX);
-}
+void config_cleanup(void) { memset(cfg.cfg_path, 0, PATH_MAX); }

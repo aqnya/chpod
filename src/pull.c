@@ -6,7 +6,6 @@
 
 struct stat file_stat;
 
-
 static char *tok_html(const char *tmp_file) {
   FILE *fp = fopen(tmp_file, "r");
   if (!fp) {
