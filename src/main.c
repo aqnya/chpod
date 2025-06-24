@@ -15,7 +15,7 @@ int prase_args(int argc, char *argv[]) {
     if (argc >= 4) {
       pull(argv[2], argv[3]);
     } else {
-      fprintf(stderr, "Error: insufficient arguments for install\n");
+      plog(ERROR, "Missing parameters");
       show_help(argv[0]);
       exit(0);
     }
@@ -28,9 +28,9 @@ int prase_args(int argc, char *argv[]) {
     printf("Build time :%s\n", BUILD_TIMESTAMP);
   } else if (strcmp(argv[1], "-d") == 0 || strcmp(argv[1], "--delete") == 0) {
     if (argc < 3) {
-      fprintf(stderr, "Error: missing container name\n");
+      plog(ERROR, "missing container name");
       list_installed_containers();
-      fprintf(stderr, "Usage: %s --del <container_name>\n", argv[0]);
+      printf("Usage: %s --del <container_name>\n", argv[0]);
       return -1;
     }
 
@@ -38,7 +38,7 @@ int prase_args(int argc, char *argv[]) {
     char *path = find_container_path(container_name);
 
     if (!path) {
-      fprintf(stderr, "Error: container '%s' not found\n", container_name);
+      plog(ERROR, "container '%s' not found", container_name);
       return -1;
     }
 
@@ -67,9 +67,7 @@ int prase_args(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
   config_init();
-
   prase_args(argc, argv);
-  // 清理配置
   config_cleanup();
   return 0;
 }

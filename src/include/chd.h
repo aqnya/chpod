@@ -17,6 +17,7 @@
 
 #include "color.h"
 #include "config.h"
+#include "logleve.h"
 
 #if !defined(__linux__)
 #    error "This program requires Linux operating system"
@@ -39,10 +40,9 @@ void list_installed_containers(void);
 int downloader(const char *url, const char *filename);
 int pull(const char* pod_name, const char* pod_ver);
 int extract(const char *filename, const char *destdir);
-void printc(ForegroundColor fg, BackgroundColor bg, TextStyle style, 
-            const char *format, ...);
 void show_help(const char* file);
 void down_help(void);
+void plog(LogLevel level, const char* format, ...);
 
 #ifdef __cplusplus
 }

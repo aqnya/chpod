@@ -35,7 +35,7 @@ void config_init(void) {
   const char *env_prefix = getenv("PREFIX");
 
   if (!env_home || !env_prefix) {
-    printc(FG_RED, BG_DEFAULT, STYLE_RESET, "[FATAL] necessary: HOME, PREFIX");
+    plog(ERROR, "Required Environment Variables(HOME,PREFIX)");
     exit(EXIT_FAILURE);
   }
 
@@ -46,12 +46,12 @@ void config_init(void) {
   snprintf(cfg.tmp_dir, sizeof(cfg.tmp_dir), "%s/.tmp", cfg.cfg_path);
 
   if (strlen(cfg.cfg_path) >= PATH_MAX || strlen(cfg.tmp_dir) >= PATH_MAX) {
-    printc(FG_RED, BG_DEFAULT, STYLE_RESET, "[ERROR] Path too long\n");
+    plog(ERROR, "Path too long\n");
     exit(EXIT_FAILURE);
   }
 
   if (__mkdir_r(cfg.cfg_path, 0755) != 0 || __mkdir_r(cfg.tmp_dir, 0755) != 0) {
-    printc(FG_RED, BG_DEFAULT, STYLE_RESET, "[FATAL] Failed to create dirs\n");
+    plog(ERROR, "Failed to create dirs\n");
     config_cleanup();
     exit(EXIT_FAILURE);
   }
