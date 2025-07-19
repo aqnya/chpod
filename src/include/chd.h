@@ -42,7 +42,7 @@ int pull(const char* pod_name, const char* pod_ver);
 int extract(const char *filename, const char *destdir);
 void show_help(const char* file);
 void down_help(void);
-void plog(LogLevel level, const char* format, ...);
+void plog(int level, const char* format, ...);
 
 #ifdef __cplusplus
 }

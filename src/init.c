@@ -4,7 +4,7 @@ int fix_dns(const char *dir) {
   char dns_dir[PATH_MAX] = {0};
   if (snprintf(dns_dir, PATH_MAX, "%s%s", dir, "/etc/resolv.conf") >=
       PATH_MAX) {
-    plog(ERROR, "Path too long!");
+    plog(LOG_ERROR, "Path too long!");
     return -1;
   }
   unlink(dns_dir);

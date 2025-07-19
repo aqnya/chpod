@@ -7,7 +7,7 @@
 
 static int check_proot(void) {
   if (execute_command("proot >/dev/null 2>&1") == 127) {
-    plog(ERROR, "You have not install proot.\n");
+    plog(LOG_ERROR, "You have not install proot.\n");
     return -1;
   }
   return 0;
@@ -59,7 +59,7 @@ void run_proot_container(const char *container_name) {
   } else {
     container_path = find_container_path(container_name);
     if (container_path == NULL) {
-      plog(ERROR, "Can't find path of rootfs");
+      plog(LOG_ERROR, "Can't find path of rootfs");
       exit(EXIT_FAILURE);
     }
   }
@@ -76,7 +76,7 @@ void run_proot_container(const char *container_name) {
       snprintf(sh, sizeof(sh), "%s", "/bin/sh");
     } else {
       printf("%s\n", path);
-      plog(ERROR, "Unknown shell");
+      plog(LOG_ERROR, "Unknown shell");
       return;
     }
   }

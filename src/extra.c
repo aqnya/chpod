@@ -12,7 +12,7 @@ static void safe_path(const char *destdir, const char *path, char *safe_path,
                       size_t size) {
   char resolved_dest[PATH_MAX];
   if (realpath(destdir, resolved_dest) == NULL) {
-    plog(ERROR, "realpath failed for destination directory");
+    plog(LOG_ERROR, "realpath failed for destination directory");
     exit(1);
   }
 
@@ -28,7 +28,7 @@ static void safe_path(const char *destdir, const char *path, char *safe_path,
 
   // 检查解析后的路径是否在目标目录下
   if (strncmp(resolved_full_path, resolved_dest, strlen(resolved_dest)) != 0) {
-    plog(ERROR, "[ERROR] Potential attacks：%s\n", path);
+    plog(LOG_ERROR, "[ERROR] Potential attacks：%s\n", path);
     exit(1);
   }
 
@@ -66,7 +66,7 @@ int extract(const char *filename, const char *destdir) {
     if (r == ARCHIVE_EOF)
       break;
     if (r < ARCHIVE_OK)
-      plog(ERROR, "错误: %s\n", archive_error_string(a));
+      plog(LOG_ERROR, "错误: %s\n", archive_error_string(a));
     if (r < ARCHIVE_WARN)
       goto cleanup;
 
@@ -81,7 +81,7 @@ int extract(const char *filename, const char *destdir) {
     // 写入文件到磁盘
     r = archive_write_header(ext, entry);
     if (r < ARCHIVE_OK)
-      plog(WARNING, "[Warning]: %s\n", archive_error_string(ext));
+      plog(LOG_WARNING, "[Warning]: %s\n", archive_error_string(ext));
     if (r == ARCHIVE_FATAL)
       goto cleanup;
 
@@ -106,7 +106,7 @@ int extract(const char *filename, const char *destdir) {
 
     r = archive_write_finish_entry(ext);
     if (r < ARCHIVE_OK)
-      plog(ERROR, "完成条目失败: %s\n", archive_error_string(ext));
+      plog(LOG_ERROR, "完成条目失败: %s\n", archive_error_string(ext));
     if (r == ARCHIVE_FATAL)
       goto cleanup;
   }

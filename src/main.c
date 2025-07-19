@@ -15,7 +15,7 @@ int prase_args(int argc, char *argv[]) {
     if (argc >= 4) {
       pull(argv[2], argv[3]);
     } else {
-      plog(ERROR, "Missing parameters");
+      plog(LOG_ERROR, "Missing parameters");
       show_help(argv[0]);
       exit(0);
     }
@@ -28,7 +28,7 @@ int prase_args(int argc, char *argv[]) {
     printf("Build time :%s\n", BUILD_TIMESTAMP);
   } else if (strcmp(argv[1], "-d") == 0 || strcmp(argv[1], "--delete") == 0) {
     if (argc < 3) {
-      plog(ERROR, "missing container name");
+      plog(LOG_ERROR, "missing container name");
       list_installed_containers();
       printf("Usage: %s --del <container_name>\n", argv[0]);
       return -1;
@@ -38,7 +38,7 @@ int prase_args(int argc, char *argv[]) {
     char *path = find_container_path(container_name);
 
     if (!path) {
-      plog(ERROR, "container '%s' not found", container_name);
+      plog(LOG_ERROR, "container '%s' not found", container_name);
       return -1;
     }
 
